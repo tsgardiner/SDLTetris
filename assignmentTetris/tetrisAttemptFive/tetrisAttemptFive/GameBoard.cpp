@@ -1,12 +1,17 @@
 #include "GameBoard.h"
 
 
-GameBoard::GameBoard()
+GameBoard::GameBoard(Shapes *shapes, int screenHeight)
 {
+
+	this->shapes = shapes;
+	this->screenHeight = screenHeight;
+
+
 }
 
 
-void GameBoard::InitBoard()
+void GameBoard::makeBoard()
 {
 	for (int i = 0; i < BOARD_WIDTH; i++)
 	{
@@ -16,6 +21,33 @@ void GameBoard::InitBoard()
 		}
 	}
 }
+
+
+int GameBoard::getPositionX(int positonX)
+{
+	return	((BOARD_POSITION - (BLOCK_SIZE * (BOARD_WIDTH / 2))) + (positonX * BLOCK_SIZE));
+}
+
+int GameBoard::getPositionY(int positonY)
+{
+	return ((screenHeight - (BLOCK_SIZE * BOARD_HEIGHT)) + (positonY * BLOCK_SIZE));
+}
+
+bool GameBoard::checkCellFree(int positionX, int positionY)
+{
+	if (board[positionX][positionY] == positionFree)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
+
+
 
 GameBoard::~GameBoard()
 {

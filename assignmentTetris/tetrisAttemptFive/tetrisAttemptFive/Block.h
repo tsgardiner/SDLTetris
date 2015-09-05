@@ -1,4 +1,9 @@
+#ifndef _Block_
+#define _Block_
+
 #include <SDL.h>
+
+#define B_SIZE 20
 
 class Block
 {
@@ -7,18 +12,18 @@ public:
 	~Block();
 
 
-	Block(SDL_Renderer *renderBlock, SDL_Point *startPosition, int *size);
+	Block(SDL_Renderer *renderBlock, SDL_Point startPosition, int *size);
 
 	void Draw();
 
-	void DrawRect(SDL_Point firstPosition, SDL_Point secondPosition);
+	void DrawRect(SDL_Point renderPosition);
 
 private:
-	//SDL_Color REDBLOCK = { 128, 0, 0, 255 };
-	SDL_Rect* block, blockOutline;
+	
+	SDL_Rect blockTesting, blockOutline;
 	int Block_Size, positionX, positionY, size;
-	SDL_Point *startPosition;
-	SDL_Renderer *renderBlock;
+	SDL_Point startPosition, TargerRenderPosition;
+	SDL_Renderer* renderBlock;
 	
 };
-
+#endif //_Block_
