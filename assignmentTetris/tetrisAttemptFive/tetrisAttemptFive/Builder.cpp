@@ -1,13 +1,10 @@
 #include "Builder.h"
 
 
-
 Builder::Builder()
 {
 	init();
 }
-
-
 
 bool Builder::init()
 {
@@ -15,7 +12,7 @@ bool Builder::init()
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
 	{
-		cout << ("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
+		printf ("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
 		success = false;
 	}
 	else
@@ -23,30 +20,29 @@ bool Builder::init()
 		//Set texture filtering to linear
 		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
 		{
-			cout << ("Warning: Linear texture filtering not enabled!");
+			printf ("Warning: Linear texture filtering not enabled!");
 		}
 		//Create window
 		window = SDL_CreateWindow("SDL Tetris Attempt", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (window == NULL)
 		{
-			cout << ("Window could not be created! SDL Error: %s\n", SDL_GetError());
+			printf ("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
 		}
 		else
 		{
 			//Create renderer for window
-			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 			if (renderer == NULL)
 			{
-				cout << ("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
+				printf ("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
 				success = false;
 			}
 			else
 			{
-
-				screen = SDL_GetWindowSurface(window);
+				
 				//Initialize renderer color
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 			}
 		}
 	}
@@ -54,43 +50,86 @@ bool Builder::init()
 	return success;
 }
 
+void Builder::ClearScreen()
+{
+	SDL_Rect gridPointRender = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderFillRect(renderer, &gridPointRender);
+	SDL_RenderPresent(renderer);
+}
+
 
 void Builder::DrawRect(SDL_Point *renderPosition)
 {
+	shapePosition = { (renderPosition->x), (renderPosition->y) };
 	SDL_Rect gridPointRender = { renderPosition->x, renderPosition->y, blockSize, blockSize };
 	SDL_SetRenderDrawColor(renderer, 0, 0, 204, 255);
+	SDL_RenderFillRect(renderer, &gridPointRender);
+	SDL_RenderPresent(renderer);
+}
+
+void Builder::DrawRectBoard(SDL_Point *renderPosition)
+{
+
+	SDL_Rect gridPointRender = { renderPosition->x, renderPosition->y, blockSize, blockSize };
+	SDL_SetRenderDrawColor(renderer, 0, 102, 0, 255);
 	SDL_RenderFillRect(renderer, &gridPointRender);
 	SDL_RenderPresent(renderer);
 
 }
 
-void Builder::blockTesting()
+
+/*
+======================================
+Keyboard Input //Stolen from Tetris example
+======================================
+*/
+int Builder::Pollkey()
 {
-	/*Block testing stuff
-
-	SDL_Point newPoint = { 150, 150 };
-	int size1 = 50;
-	Block *newBlock = new Block(renderer, newPoint, &size1);
-
-	SDL_Point newPoint254 = { 280, 580 };
-	int size123 = 20;
-	Block *newBlock1 = new Block(renderer, newPoint254, &size123);
-
-	SDL_Point newPoint2 = { 150, 580 };
-	int size12 = 20;
-	Block *newBlock2 = new Block(renderer, newPoint2, &size12);
-
-	newBlock1->Draw();
-	newBlock2->Draw();
-	newBlock->Draw();
-	*/
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type) {
+		case SDL_KEYDOWN:
+			return event.key.keysym.sym;
+		case SDL_QUIT:
+			exit(3);
+		}
+	}
+	return -1;
+}
+/*
+======================================
+Keyboard Input //Stolen from Tetris example
+======================================
+*/
+int Builder::Getkey()
+{
+	SDL_Event event;
+	while (true)
+	{
+		SDL_WaitEvent(&event);
+		if (event.type == SDL_KEYDOWN)
+			break;
+		if (event.type == SDL_QUIT)
+			exit(3);
+	};
+	return event.key.keysym.sym;
 }
 
 /*
-SDL_Renderer *Builder::getRenderer()
+======================================
+Keyboard Input //Stolen from Tetris example
+======================================
+*/
+int Builder::IsKeyDown(int pKey)
 {
-	return renderer;
-}*/
+	const Uint8* mKeytable;
+	int mNumkeys;
+	SDL_PumpEvents();
+	mKeytable = SDL_GetKeyboardState(&mNumkeys);
+	return mKeytable[pKey];
+}
 
 const int Builder::getScreenHeight()
 {
@@ -102,12 +141,8 @@ const int Builder::getSreenWidth()
 	return SCREEN_WIDTH;
 }
 
-void Builder::flipScreen()
-{
-	SDL_RendererFlip(screen);
-}
 
-void Builder::closeAll()
+void Builder::CloseAll()
 {
 	//Destroy window	
 	SDL_DestroyRenderer(renderer);

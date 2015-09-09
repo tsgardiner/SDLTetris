@@ -1,4 +1,5 @@
 
+
 #ifndef _SHAPES_
 #define _SHAPES_
 class Shapes
@@ -10,11 +11,9 @@ public:
 	int GetStartPositionX(int shapeType);
 
 	int GetStartPositionY(int shapeType);
+
+
+
+	void Move(int x, int y);
 };
 #endif //_SHAPES_
-/*{
-{ 0, 0, 0, 0 },
-{ 0, 1, 1, 0 },
-{ 0, 1, 1, 0 },
-{ 0, 0, 0, 0 }
-}*/
