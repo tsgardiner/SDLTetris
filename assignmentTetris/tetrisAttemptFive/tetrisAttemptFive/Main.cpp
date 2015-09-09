@@ -1,4 +1,33 @@
-/*X9IXMUPUUC4C*/
+/*
+	Tetris Assignment 
+	Tim Gardiner
+	10/09/2015
+
+	For this assignment I got most of my ideas from the LazyFoo SDL tutorials
+	these where backed up from the working example of C++/SDL tetris found online.
+	I tried to put comments on the methods I stole directly from this example,
+	but may have missed some. Choose not to add hardcoded roations of shapes into
+	the shape array as I wanted to try figure out the sorting rotation, ended up 
+	having to have no rotation.
+
+	I put some bookmarks on key methods to make navigation a bit easier.
+
+	Current bugs:
+	The Delete lines method doesn't work correctly. All the numbers seem to be right
+	it just doesn't actually delete the line.
+
+	When the board builds up to about halfway if the down key is held the draw rate,
+	and refresh rate get out of sync and it cuts some shapes in half. It does look cool though.
+
+	Some inline comments where for testing purposes. I have left most of them in.
+
+	Forgot about adding a game over function at all.
+
+	//My commits to github
+	https://github.com/tsgardiner/SDLTetris 
+*/
+
+
 #include <iostream>
 #include "Engine.h"
 
@@ -14,20 +43,8 @@ unsigned long mTime1 = SDL_GetTicks();
 
 int main(int argc, char* args[])
 {
-		/*bool quit = false;
-		SDL_Event e;
-
-			while (!quit)
-			{
-				while (SDL_PollEvent(&e) != 0)
-				{
-					if (e.type == SDL_QUIT)
-					{
-						quit = true;
-					}
-				}*/
 		
-	//Key input code straight from example.
+	//Key input code stolen straight from example.
 	//Needs tweaking to make shape move but key selection works.
 	while (!builder.IsKeyDown(SDLK_ESCAPE))
 	{
@@ -39,67 +56,39 @@ int main(int argc, char* args[])
 				{
 				case (SDLK_RIGHT) :
 				{
-					if (engine.CollisionRight())
+					if (engine.checkCollision(engine.currentPositionX +1, engine.currentPositionY, engine.shapeType))
 					{
 						engine.currentPositionX++;
-						builder.ClearScreen();
-						printf("Right Key\n\n");
-						printf("\n%d\n\n\n", engine.currentPositionX);
+						builder.clearScreen();
+						//printf("Right Key\n\n");
+						//printf("\n%d\n\n\n", engine.currentPositionX);
 					}
 					break;
 				}
 
 				case (SDLK_LEFT) :
 				{
-					if (engine.CollisionLeft())
+					if (engine.checkCollision(engine.currentPositionX -1, engine.currentPositionY, engine.shapeType))
 					{
 						engine.currentPositionX--;
-						builder.ClearScreen();
-						printf("Left Key\n");
-						printf("\n%d\n\n\n", engine.currentPositionX);
+						builder.clearScreen();
+						//printf("Left Key\n");
+						//printf("\n%d\n\n\n", engine.currentPositionX);
 					}					
 					break;
 				}
-
+				
+				//Cool bug if down key is held.
 				case (SDLK_DOWN) :
 				{
-					if (engine.CollisionBottom())
+					if (engine.checkCollision(engine.currentPositionX, engine.currentPositionY +1, engine.shapeType))
 					{
 						engine.currentPositionY++;
-						builder.ClearScreen();
-
+						builder.clearScreen();
 						
 					}
 					break;
 				}
-
-			/*	case (SDLK_x) :
-				{
-					// Check collision from up to down
-					while (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY, mGame.mPiece, mGame.mRotation)) { mGame.mPosY++; }
-
-					mBoard.StorePiece(mGame.mPosX, mGame.mPosY - 1, mGame.mPiece, mGame.mRotation);
-
-					mBoard.DeletePossibleLines();
-
-					if (mBoard.IsGameOver())
-					{
-						mIO.Getkey();
-						exit(0);
-					}
-
-					mGame.CreateNewPiece();
-
-					break;
-				}
-
-				case (SDLK_z) :
-				{
-					if (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY, mGame.mPiece, (mGame.mRotation + 1) % 4))
-						mGame.mRotation = (mGame.mRotation + 1) % 4;
-
-					break;
-				}*/
 				}
 
 				// ----- Vertical movement -----
@@ -108,46 +97,24 @@ int main(int argc, char* args[])
 
 				if ((mTime2 - mTime1) > WAIT_TIME)
 				{
-					printf("Current Positoin of Y:\n%d\n\n\n", engine.currentPositionY);
-
-					if (engine.CollisionBottom())
+					//printf("Current Positoin of Y:\n%d\n\n\n", engine.currentPositionY);
+					if (engine.checkCollision(engine.currentPositionX , engine.currentPositionY +1, engine.shapeType))
 					{
 						engine.currentPositionY++;
-						builder.ClearScreen();
+						builder.clearScreen();
 					}
 					else
 					{
-						gameBoard.
+						gameBoard.storeShape(engine.currentPositionX, engine.currentPositionY, engine.shapeType);
+
+						gameBoard.deleteLines();
+
+						engine.makeNextShape();
 					}
 					
-					/*
-					if (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY + 1, mGame.mPiece, mGame.mRotation))
-					{
-						mGame.mPosY++;
-					}
-					else
-					{
-						mBoard.StorePiece(mGame.mPosX, mGame.mPosY, mGame.mPiece, mGame.mRotation);
-
-						mBoard.DeletePossibleLines();
-
-						if (mBoard.IsGameOver())
-						{
-							builder.Getkey();
-							exit(0);
-						}
-
-						mGame.CreateNewPiece();
-					}*/
-
 					mTime1 = SDL_GetTicks();
 				}
 			}
-
-			
-		
-
-		//close();
 		builder.CloseAll();
 
 	return 0;

@@ -12,8 +12,7 @@ class GameBoard
 {
 public:
 	GameBoard(Shapes *shapes, int screenHeight);
-	~GameBoard();
-
+	
 	int getPositionX(int positionX);
 	int getPositionY(int positionY);
 	bool checkCellFree(int positionX, int positionY);
@@ -34,8 +33,7 @@ private:
 	Builder *builder;
 	void makeBoard();
 
-
-	void deleteLine(int positionY);
+	void deleteLine(int positionY); //This doesn't work.
 	
 	
 };

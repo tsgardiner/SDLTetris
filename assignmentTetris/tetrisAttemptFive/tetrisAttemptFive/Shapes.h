@@ -12,8 +12,5 @@ public:
 
 	int GetStartPositionY(int shapeType);
 
-
-
-	void Move(int x, int y);
 };
 #endif //_SHAPES_

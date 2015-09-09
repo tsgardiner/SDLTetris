@@ -7,15 +7,10 @@
 
 using namespace std;
 
-#define testSCREEN_WIDTH 300
-#define testSCREEN_HEIGHT 600
-
 class Builder
 {
 public:
 	Builder();
-	~Builder();
-
 	void DrawRect(SDL_Point *renderPosition);
 	void DrawRectBoard(SDL_Point *renderPosition);
 	void ClearRect(SDL_Point *clearPosition);
@@ -23,7 +18,7 @@ public:
 	const int getSreenWidth();
 	
 	void CloseAll();	
-	void ClearScreen(); 
+	void clearScreen(); 
 
 	int Pollkey();
 	int Getkey();
@@ -37,10 +32,6 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	
-	
-	SDL_Point shapePosition;
-
 	bool init();
-
 };
 #endif

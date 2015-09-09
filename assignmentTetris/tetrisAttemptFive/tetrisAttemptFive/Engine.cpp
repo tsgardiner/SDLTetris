@@ -1,8 +1,7 @@
 #include "Engine.h"
 #include <iostream>
 
-
-
+//This is the game engine it sets up the game board and the shapse, and  also checks collisions.
 
 Engine::Engine(GameBoard *gameBoard, Shapes *shapes, Builder *builder, int screenHeight)
 {
@@ -14,25 +13,36 @@ Engine::Engine(GameBoard *gameBoard, Shapes *shapes, Builder *builder, int scree
 	startEngine();
 }
 
-
 void Engine::Run()
 {
-	
 	DrawBoard();
 	DrawShape(currentPositionX, currentPositionY, shapeType);
-	
+}
+
+int Engine::random(int min, int max)
+{
+	return rand() % (max - min + 1) + min;
 }
 
 void Engine::startEngine()
 {
-	//Make shape type random
+	srand((unsigned int)time(NULL));
 
-	shapeType = 1; //Current only one shape to choose from at position 0 in the array.
+	shapeType = random(0, 6); 
+	//printf("First random: %d\n\n\n", shapeType);
 	
 	//Get starting position of shape
 	currentPositionX = shapes->GetStartPositionX(shapeType); //X=3
 	currentPositionY = shapes->GetStartPositionY(shapeType); //Y=3
-	printf("X%d\n\n\n\nY%d\n\n\n", currentPositionX, currentPositionY);
+	//printf("\nX: %d\n\nY: %d\n\n", currentPositionX, currentPositionY);
+}
+
+void Engine::makeNextShape()
+{
+	//printf("First random: %d\n\n\n", shapeType);
+	shapeType = random(0, 6);
+	currentPositionX = shapes->GetStartPositionX(shapeType); //X=3
+	currentPositionY = shapes->GetStartPositionY(shapeType); //Y=3
 }
 
 
@@ -51,15 +61,12 @@ void Engine::DrawBoard()
 			// Not working correctly as of 10:50 - 06/09
 			if (!gameBoard->checkCellFree(i, j))//Set to zero to test where board draws
 			{
-				SDL_Point drawPoint = { (j * BLOCK_SIZE), (i * BLOCK_SIZE) };
+				SDL_Point drawPoint = { (j * BLOCK_SIZE), (i * BLOCK_SIZE) };//Too many brackets = bad.
 				//SDL_Point drawPoint{ 100, 100 };	
-				builder->DrawRectBoard(&drawPoint);//Board draws green blocks
-				
+				builder->DrawRectBoard(&drawPoint);//Board draws green blocks				
 			}
 		}
-		
 	}
-
 }
 
 
@@ -78,99 +85,40 @@ void Engine::DrawShape(int positionX, int positionY, int shapeType)
 				
 				SDL_Point drawPoint = { ((shapePositionX + i) * BLOCK_SIZE), (shapePositionY + j) * BLOCK_SIZE };
 				//SDL_Point drawPoint{ 20, 20 };
-				builder->DrawRect(&drawPoint);//Shapes draw blue blocks
-				
-				
+				builder->DrawRect(&drawPoint);//Shapes draw blue blocks				
 			}
 		}
 	}
 }
 
-/*
-bool Engine::Collision()
+
+//Stolen from SDL example. Took a while to convert to mine as they implimented this in gameboard.
+bool Engine::checkCollision(int positionX, int positionY, int shapeType)
 {
-	for (int i = 0; i < 5; i++)
+	for (int i1 = positionX, i2 = 0; i1 < positionX + SHAPE_DIMENTIONS; i1++, i2++)
 	{
-		for (int j = 0; j < 5; j++)
+		for (int j1 = positionY, j2 = 0; j1 < positionY + SHAPE_DIMENTIONS; j1++, j2++)
 		{
-			if (currentPositionX + j >+ testSCREEN_WIDTH && shapes->GetShape(shapeType, i, j) > 0 )
+			if ((i1 < 0) || (i1  > BOARD_WIDTH - 1) || (j1 > BOARD_HEIGHT - 1))
 			{
-				return false;
+				if (shapes->GetShape(shapeType, j2, i2) != 0)
+				{
+					return false;
+				}
 			}
-			else if (currentPositionX + j < 0 && shapes->GetShape(shapeType, i, j) > 0)
+			else if (j1 >= 0)
 			{
-				return false;
+				//printf("Get shape is:\n%d\n\n\n", shapes->GetShape(shapeType, j2, i2)); 
+				//printf("Check cell is:\n%d\n\n\n", gameBoard->checkCellFree(i1, j1)); //This was original layout.
+				//Needed to swap i1 and j1 in checkCell method to make it work with my board.
+				if ((shapes->GetShape(shapeType, j2, i2) != 0) &&  (!gameBoard->checkCellFree(j1, i1)))
+				{
+					return false;
+				}
 			}
-			else if (currentPositionY + i >= testSCREEN_HEIGHT && shapes->GetShape(shapeType, i, j) > 0)
-			{
-				return false;
-			}
-			
-			
-		}
+		
 	}
-	return true;
-}*/
-
-
-bool Engine::CollisionLeft()
-{	
-		if (currentPositionX < 1)
-		{
-			return false;				
-		}	
-	return true;
-}
-
-bool Engine::CollisionRight()
-{
-		if (currentPositionX + SHAPE_DIMENTIONS + 1 > BOARD_WIDTH) 
-		{
-			return false;
-		}
-	
-	return true;
-}
-
-bool Engine::CollisionBottom()
-{
-	if (currentPositionY + SHAPE_DIMENTIONS > BOARD_HEIGHT +1) //Plus one because of current shape positoin in array
-	{
-		return false;
-	}
-	return true;
-}
-
-Engine::~Engine()
-{
-}
-
-
-
-
-/* Copy of semi working code before I change it.
-bool Engine::Collision()
-{
-for (int i1 = currentPositionX , i2 = 0; i1 < SHAPE_DIMENTIONS; i1++, i2++)
-{
-for (int j1 = currentPositionY, j2 = 0; j1 < currentPositionY + SHAPE_DIMENTIONS; j1++, j2++)
-{
-if ((i1 < 0) || (i1 > BOARD_WIDTH + SHAPE_DIMENTIONS ) || (j1 > BOARD_HEIGHT + 5))
-{
-if (shapes->GetShape (shapeType, j2, i2) !=0)
-{
-return 0;
-}
-if (j1 >= 0)
-{
-if ((shapes->GetShape(shapeType, j2, i2) != 0) && (!gameBoard->checkCellFree(i1, j1)))
-{
-return false;
-}
-}
-}
-}
 }
 
 return true;
-}*/
+}

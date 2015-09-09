@@ -1,31 +1,59 @@
 #include "Shapes.h"
 
-
-char shapes[2][4][4]
+//Total of seven shapes in a 4x4 matrix.
+char shapes[7][4][4]
 = 
 {
-		//First attempt
+		//Shapes
 		{
-			{ 0, 0, 0, 0 },
-			{ 0, 0, 0, 0 },
-			{ 0, 0, 0, 0 },
-			{ 0, 0, 0, 0 }
+			{ 0, 0, 1, 0 },
+			{ 0, 0, 1, 0 },
+			{ 0, 0, 1, 0 },
+			{ 0, 0, 1, 0 }
 		}, 
 		{
-			{ 0, 0, 0, 0 },
-			{ 1, 1, 1, 1 },
+			{ 0, 1, 0, 0 },
+			{ 0, 1, 1, 0 },
+			{ 0, 0, 1, 0 },
+			{ 0, 0, 0, 0 }
+		},
+		{
+			{ 0, 0, 1, 0 },
+			{ 0, 1, 1, 1 },
 			{ 0, 0, 0, 0 },
 			{ 0, 0, 0, 0 }
+		},
+		{
+			{ 0, 0, 0, 0 },
+			{ 0, 0, 1, 0 },
+			{ 0, 0, 1, 1 },
+			{ 0, 0, 1, 0 }
+		},
+		{
+			{ 0, 0, 0, 0 },
+			{ 0, 1, 1, 0 },
+			{ 0, 0, 1, 0 },
+			{ 0, 0, 1, 0 }
+		},
+		{//Crazy shape test left in.
+			{ 0, 1, 0, 0 },
+			{ 0, 1, 1, 1 },
+			{ 1, 1, 1, 0 },
+			{ 0, 0, 1, 0 }
+		},
+		{
+			{ 0, 0, 0, 0 },
+			{ 0, 1, 1, 0 },
+			{ 0, 1, 1, 0 },
+			{ 0, 0, 0, 0 }
 		}
-		
 };
 
-
-char startingPosition[2][2]
+//Starting Position of all shapes.
+char startingPosition[1][2]
 =
 { 	
-	{ 4, -4 },
-	{ 4, -4}
+	{ 4, -4 }//Set to minus 4 so whole shape is drawn off screen to start.
 };
 
 
@@ -36,19 +64,12 @@ int Shapes::GetShape(int shapeType, int positionX, int positionY)
 
 int Shapes::GetStartPositionX(int shapeType)
 {
-	return startingPosition [shapeType][0];
+	return startingPosition [0][0];
 	
 
 }
 
 int Shapes::GetStartPositionY(int shapeType)
 {
-	return startingPosition[shapeType][1];
+	return startingPosition[0][1];
 }
-
-
-void Shapes::Move(int x, int y)
-{
-	
-}
-

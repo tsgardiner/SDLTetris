@@ -50,7 +50,7 @@ bool Builder::init()
 	return success;
 }
 
-void Builder::ClearScreen()
+void Builder::clearScreen()
 {
 	SDL_Rect gridPointRender = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -61,7 +61,6 @@ void Builder::ClearScreen()
 
 void Builder::DrawRect(SDL_Point *renderPosition)
 {
-	shapePosition = { (renderPosition->x), (renderPosition->y) };
 	SDL_Rect gridPointRender = { renderPosition->x, renderPosition->y, blockSize, blockSize };
 	SDL_SetRenderDrawColor(renderer, 0, 0, 204, 255);
 	SDL_RenderFillRect(renderer, &gridPointRender);
@@ -153,6 +152,3 @@ void Builder::CloseAll()
 	SDL_Quit();
 }
 
-Builder::~Builder()
-{
-}

@@ -1,3 +1,7 @@
+#ifndef _ENGINE_
+#define _ENGINE_
+
+
 #include "GameBoard.h"
 #include "Block.h"
 #include "Shapes.h"
@@ -10,16 +14,17 @@ class Engine
 {
 public:
 	Engine(GameBoard *gameBoard, Shapes *shapes, Builder *builder, int screenHeight);
-	~Engine();
+	
 	int currentPositionX, currentPositionY, shapeType;
 	void Run();
 	int getCurrentShapeType();
-	bool CollisionLeft();
-	bool CollisionRight();
-	bool CollisionBottom();
+	bool checkCollision(int pX, int pY, int shapeType);
+	void makeNextShape();
+
 private:
 	int timer = SDL_GetTicks();
 	int screenHeight;
+	int random(int , int);
 	GameBoard *gameBoard;
 	Shapes *shapes;
 	Builder *builder;
@@ -27,5 +32,6 @@ private:
 	void DrawShape(int positionX, int positionY, int shapeType);
 	void DrawBoard();
 	void startEngine();
+	
 };
-
+#endif // !_ENGINE_
